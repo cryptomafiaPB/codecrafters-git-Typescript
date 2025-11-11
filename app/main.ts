@@ -1,5 +1,15 @@
 import * as fs from "fs";
 
+// GitClient import 
+import GitClient from "./git/main"
+
+// Commands import
+import CatFile from "./git/commands/cat-file";
+import { stderr } from "process";
+
+
+const gitClient = new GitClient()
+
 const args = process.argv.slice(2);
 const command = args[0];
 
@@ -15,6 +25,28 @@ switch (command) {
     fs.writeFileSync(".git/HEAD", "ref: refs/heads/main\n");
     console.log("Initialized git directory");
     break;
+  case "cat-file":
+    handleCatFile()
+    break;
   default:
     throw new Error(`Unknown command ${command}`);
+}
+
+
+function handleCatFile() {
+  let flag: string = args[1]
+  let file: string = args[2]
+
+  if (!file || !flag) {
+    throw new Error("only two arguments allowed in <type> <object> mode, not 1")
+  }
+  // if (!file) {
+  //   file = flag
+  //   flag = undefined
+  // }
+
+  const command = new CatFile(file, flag)
+
+  gitClient.run(command)
+
 }
