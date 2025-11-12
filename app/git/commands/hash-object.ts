@@ -38,7 +38,6 @@ class HashObject {
         //  hash[2::] = zlib.deflate(assembleContent)
         const contentBuffer = Buffer.concat([Buffer.from(`blob ${content.length}\0`), Buffer.from(content)])
         const compressedContent = zlib.deflateSync(contentBuffer)
-        console.log({ compressedContent })
 
         // create a folder
         fs.mkdirSync(folder)
