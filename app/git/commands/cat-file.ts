@@ -16,13 +16,13 @@ class CatFile {
         this.file = file
     }
 
-    run() {
+    execute() {
         const flag = this.flag
         const file = this.file
 
         const filePath = path.join(process.cwd(), ".git", "objects", file.slice(0, 2), file.slice(2))
 
-        if (!fs.existsSync(filePath)) throw new Error(`Not a valid object name ${file}`)
+        if (!fs.existsSync(filePath)) return process.stdout.write(`Not a valid object name ${file}`)
 
         const contentBuffer = fs.readFileSync(filePath)
 
@@ -41,7 +41,7 @@ class CatFile {
                 process.stdout.write(sizeOfBlob)
                 break
             default:
-                throw new Error(`Unknown flag ${flag}`)
+                return process.stdout.write(`Unknown flag ${flag}`)
         }
     }
 }

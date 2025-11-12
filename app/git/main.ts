@@ -1,6 +1,6 @@
 class GitClient {
     run(command: any) {
-        command.run()
+        command.execute()
     }
 }
 

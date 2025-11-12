@@ -5,7 +5,7 @@ import GitClient from "./git/main"
 
 // Commands import
 import CatFile from "./git/commands/cat-file";
-import { stderr } from "process";
+import HashObject from "./git/commands/hash-object";
 
 
 const gitClient = new GitClient()
@@ -28,6 +28,11 @@ switch (command) {
   case "cat-file":
     handleCatFile()
     break;
+  case "hash-object":
+
+    handleHashObject()
+    break
+
   default:
     throw new Error(`Unknown command ${command}`);
 }
@@ -40,13 +45,22 @@ function handleCatFile() {
   if (!file || !flag) {
     throw new Error("only two arguments allowed in <type> <object> mode, not 1")
   }
-  // if (!file) {
-  //   file = flag
-  //   flag = undefined
-  // }
 
   const command = new CatFile(file, flag)
 
   gitClient.run(command)
 
+}
+
+function handleHashObject() {
+  let flag: string | undefined = args[1]
+  let file: string = args[2]
+
+  if (!file) {
+    file = flag
+    flag = undefined
+  }
+
+  const command = new HashObject(file, flag)
+  gitClient.run(command)
 }
