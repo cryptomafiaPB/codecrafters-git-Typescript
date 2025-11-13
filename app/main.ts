@@ -6,6 +6,7 @@ import GitClient from "./git/main"
 // Commands import
 import CatFile from "./git/commands/cat-file";
 import HashObject from "./git/commands/hash-object";
+import LsTree from "./git/commands/ls-tree";
 
 
 const gitClient = new GitClient()
@@ -29,10 +30,11 @@ switch (command) {
     handleCatFile()
     break;
   case "hash-object":
-
     handleHashObject()
     break
-
+  case "ls-tree":
+    handleLsTree()
+    break
   default:
     throw new Error(`Unknown command ${command}`);
 }
@@ -43,7 +45,7 @@ function handleCatFile() {
   let file: string = args[2]
 
   if (!file || !flag) {
-    throw new Error("only two arguments allowed in <type> <object> mode, not 1")
+    return process.stdout.write("only two arguments allowed in <type> <object> mode, not 1")
   }
 
   const command = new CatFile(file, flag)
@@ -62,5 +64,20 @@ function handleHashObject() {
   }
 
   const command = new HashObject(file, flag)
+  gitClient.run(command)
+}
+
+function handleLsTree() {
+  let flag: string | undefined = args[1]
+  let treeHash = args[2]
+
+  if (treeHash && flag !== "--name-only") return process.stdout.write(`unknown switch flag ${flag}, only --name-only flag is valid`)
+
+  if (!treeHash && flag) {
+    treeHash = flag
+    flag = undefined
+  }
+
+  const command = new LsTree(treeHash, flag)
   gitClient.run(command)
 }
