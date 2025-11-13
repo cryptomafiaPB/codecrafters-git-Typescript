@@ -63,7 +63,7 @@ class LsTree {
             offset = shaEnd
         }
 
-        return process.stdout.write(lines.join('\n'))
+        return process.stdout.write(lines.join('\n') + '\n')
     }
 }
 
