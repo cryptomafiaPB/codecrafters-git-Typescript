@@ -68,7 +68,8 @@ class WriteTree {
             fs.writeFileSync(path.join(folder, treeFile), compressedContent, { flag: 'wx' })
             return treeHash
         }
-        createTree(process.cwd())
+        const treeHash = createTree(process.cwd())
+        return process.stdout.write(treeHash + '\n')
     }
 }
 
