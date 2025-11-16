@@ -40,15 +40,13 @@ class WriteTree {
                 if (fs.statSync(itemPath).isDirectory()) {
                     const hash = createTree(basePath + "/" + item)
                     if (hash) {
-                        result.push({ type: "Folder", pathName: path.join(basePath, item), hash })
+                        result.push({ type: "Folder", pathName: item, hash })
                     }
                 } else if (fs.statSync(itemPath).isFile()) {
                     const hash = writeBlobObject(itemPath)
                     if (hash) {
-                        result.push({ type: "blob", pathName: path.join(basePath, item), hash })
+                        result.push({ type: "blob", pathName: item, hash })
                     }
-                } else {
-                    continue
                 }
             }
 
@@ -76,27 +74,6 @@ class WriteTree {
             fs.writeFileSync(path.join(folder, treeFile), compressedContent, { flag: 'wx' })
             return treeHash
         }
-
-        //     // create tree content
-        //     let treeContentBuffers: Buffer[] = []
-        //     for (let entry of result) {
-        //         const mode = entry.type === "Folder" ? "40000" : "100644"
-        //         const line = `${mode} ${entry.pathName}\0`
-        //         const hashBuffer = Buffer.from(entry.hash!, 'hex')
-        //         treeContentBuffers.push(Buffer.from(line))
-        //         treeContentBuffers.push(hashBuffer)
-        //     }
-        //     const treeContent = Buffer.concat(treeContentBuffers)
-        //     const header = `tree ${treeContent.length}\0`
-        //     const storeContent = Buffer.concat([Buffer.from(header), treeContent])
-        //     const treeHash = crypto.createHash('sha1').update(storeContent).digest('hex')
-        //     const folder = path.join(process.cwd(), '.git', 'objects', treeHash.substring(0, 2))
-        //     const treeFile = treeHash.substring(2)
-        //     const compressedContent = zlib.deflateSync(storeContent)
-        //     if (!fs.existsSync(folder)) fs.mkdirSync(folder)
-        //     fs.writeFileSync(path.join(folder, treeFile), compressedContent, { flag: 'wx' })
-        //     return treeHash
-        // }
         const treeHash = createTree(process.cwd())
         return process.stdout.write(treeHash + '\n')
     }
