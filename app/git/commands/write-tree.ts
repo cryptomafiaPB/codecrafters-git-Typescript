@@ -40,12 +40,12 @@ class WriteTree {
                 if (fs.statSync(itemPath).isDirectory()) {
                     const hash = createTree(path.join(basePath, item))
                     if (hash) {
-                        result.push({ type: "Folder", pathName: item, hash })
+                        result.push({ type: "40000", pathName: item, hash })
                     }
                 } else if (fs.statSync(itemPath).isFile()) {
                     const hash = writeBlobObject(itemPath)
                     if (hash) {
-                        result.push({ type: "blob", pathName: item, hash })
+                        result.push({ type: "100644", pathName: item, hash })
                     }
                 }
             }
@@ -58,18 +58,16 @@ class WriteTree {
 
             const treeData = result.reduce((acc, entry) => {
                 {
-                    const mode = entry.type === "Folder" ? "40000" : "100644"
-                    const line = `${mode} ${entry.pathName}\0`
-                    const hashBuffer = Buffer.from(entry.hash!, 'hex')
-                    acc.push(Buffer.from(line))
-                    acc.push(hashBuffer)
-                    return acc
+                    return Buffer.concat([
+                        acc,
+                        Buffer.from(`${entry.type} ${entry.pathName}\0`),
+                        Buffer.from(entry.hash!, 'hex')
+                    ])
                 }
-            }, [] as Buffer[])
+            }, Buffer.alloc(0))
 
-            const treeContent = Buffer.concat(treeData)
-            const header = `tree ${treeContent.length}\0`
-            const storeContent = Buffer.concat([Buffer.from(header), treeContent])
+            const header = `tree ${treeData.length}\0`
+            const storeContent = Buffer.concat([Buffer.from(header), treeData])
             const treeHash = crypto.createHash('sha1').update(storeContent).digest('hex')
             const folder = path.join(process.cwd(), '.git', 'objects', treeHash.substring(0, 2))
             const treeFile = treeHash.substring(2)
