@@ -38,7 +38,7 @@ class WriteTree {
                 if (item.includes(".git")) continue
                 const itemPath = path.join(basePath, item)
                 if (fs.statSync(itemPath).isDirectory()) {
-                    const hash = createTree(basePath + "/" + item)
+                    const hash = createTree(path.join(basePath, item))
                     if (hash) {
                         result.push({ type: "Folder", pathName: item, hash })
                     }
@@ -50,7 +50,11 @@ class WriteTree {
                 }
             }
 
-            if (items.length === 0 || result.length === 0) return null
+            // If there are no entries (files or subtrees) return null
+            if (result.length === 0) return null
+
+            // Sort entries by filename using byte-wise comparison (git's ordering)
+            result.sort((a, b) => Buffer.compare(Buffer.from(a.pathName), Buffer.from(b.pathName)))
 
             const treeData = result.reduce((acc, entry) => {
                 {
