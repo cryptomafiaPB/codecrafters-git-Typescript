@@ -54,7 +54,7 @@ class WriteTree {
             if (result.length === 0) return null
 
             // Sort entries by filename using byte-wise comparison (git's ordering)
-            result.sort((a, b) => Buffer.compare(Buffer.from(a.pathName), Buffer.from(b.pathName)))
+            // result.sort((a, b) => Buffer.compare(Buffer.from(a.pathName), Buffer.from(b.pathName)))
 
             const treeData = result.reduce((acc, entry) => {
                 {
