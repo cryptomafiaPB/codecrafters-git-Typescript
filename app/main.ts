@@ -7,6 +7,7 @@ import GitClient from "./git/main"
 import CatFile from "./git/commands/cat-file";
 import HashObject from "./git/commands/hash-object";
 import LsTree from "./git/commands/ls-tree";
+import WriteTree from "./git/commands/write-tree";
 
 
 const gitClient = new GitClient()
@@ -34,6 +35,9 @@ switch (command) {
     break
   case "ls-tree":
     handleLsTree()
+    break
+  case "write-tree":
+    handleWriteTree()
     break
   default:
     throw new Error(`Unknown command ${command}`);
@@ -79,5 +83,10 @@ function handleLsTree() {
   }
 
   const command = new LsTree(treeHash, flag)
+  gitClient.run(command)
+}
+
+function handleWriteTree() {
+  const command = new WriteTree()
   gitClient.run(command)
 }

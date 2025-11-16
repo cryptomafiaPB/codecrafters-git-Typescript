@@ -40,7 +40,7 @@ class HashObject {
         const compressedContent = zlib.deflateSync(contentBuffer)
 
         // create a folder
-        fs.mkdirSync(folder)
+        if (!fs.existsSync(folder)) fs.mkdirSync(folder)
         // create a file
         fs.writeFileSync(path.join(folder, blobFile), compressedContent, { flag: 'wx' })
         return process.stdout.write(hash)
