@@ -8,6 +8,7 @@ import CatFile from "./git/commands/cat-file";
 import HashObject from "./git/commands/hash-object";
 import LsTree from "./git/commands/ls-tree";
 import WriteTree from "./git/commands/write-tree";
+import CommitTree from "./git/commands/commit-tree";
 
 
 const gitClient = new GitClient()
@@ -38,6 +39,9 @@ switch (command) {
     break
   case "write-tree":
     handleWriteTree()
+    break
+  case "commit-tree":
+    handleCommitTree()
     break
   default:
     throw new Error(`Unknown command ${command}`);
@@ -88,5 +92,20 @@ function handleLsTree() {
 
 function handleWriteTree() {
   const command = new WriteTree()
+  gitClient.run(command)
+}
+
+function handleCommitTree() {
+  const treeHash = args[1]
+  const parentFlag = args[2]
+  const parentHash = args[3]
+  const messageFlag = args[4]
+  const message = args[5]
+
+  if (!treeHash || !messageFlag || messageFlag !== "-m" || (parentFlag && parentFlag !== "-p")) {
+    return process.stdout.write("usage: commit-tree <tree> [-p <parent>] -m <message>\n")
+  }
+
+  const command = new CommitTree(treeHash, parentHash, message)
   gitClient.run(command)
 }
