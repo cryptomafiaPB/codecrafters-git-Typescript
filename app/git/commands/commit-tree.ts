@@ -20,12 +20,7 @@ class CommitTree {
         const message = this.message
 
         // Construct content
-        const content = `tree ${treeHash}
-        parent ${parentHash}
-        author Pranav Bagal <pranavbagal@zohomail.in> ${Date.now()} ${new Date().getTimezoneOffset()}
-        committer Pranav Bagal <pranavbagal@zohomail.in> ${Date.now()} ${new Date().getTimezoneOffset()}
-        
-        ${message}`
+        const content = `tree ${treeHash} parent ${parentHash} author Pranav Bagal <pranavbagal@zohomail.in> ${Date.now()} ${new Date().getTimezoneOffset()} committer Pranav Bagal <pranavbagal@zohomail.in> ${Date.now()} ${new Date().getTimezoneOffset()} ${message}`
 
         // Contruct a commit
         const commitData = Buffer.concat([Buffer.from(`commit ${content.length}\0`), Buffer.from(content)])
